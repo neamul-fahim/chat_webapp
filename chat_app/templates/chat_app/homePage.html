@@ -1,0 +1,106 @@
+<!-- LoginPage.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User List</title>
+    <meta name="csrf-token" content="{{ csrf_token }}" />
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      #user-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+        padding: 15px;
+        max-width: 800px;
+      }
+
+      .message {
+        padding: 15px;
+        border-radius: 8px;
+        background-color: #3498db;
+        color: #fff;
+        transition: transform 0.2s ease-in-out;
+        cursor: pointer;
+      }
+
+      .message:hover {
+        transform: scale(1.05);
+      }
+
+      h1 {
+        background-color: #2c3e50;
+        color: #ecf0f1;
+        margin: 0;
+        padding: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="user-list"></div>
+
+    <script>
+      const BASE_API_URL = "{{ BASE_API_URL }}";
+      async function fetchUsers() {
+        try {
+          const csrfToken = document.querySelector(
+            'meta[name="csrf-token"]'
+          ).content;
+          const response = await fetch(`${BASE_API_URL}/api/users/`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": csrfToken,
+            },
+          });
+          const data = await response.json();
+
+          if (response.ok) {
+            displayUsers(data);
+          } else {
+            console.error("Error fetching users:", data);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      }
+
+      function displayUsers(users) {
+        const userListContainer = document.getElementById("user-list");
+
+        users.forEach((user) => {
+          const message = document.createElement("div");
+          message.className = "message";
+          message.textContent = user.username;
+
+          // Add click event listener to each user element
+          message.addEventListener("click", () => {
+            navigateToChatPage(user.id);
+          });
+
+          userListContainer.appendChild(message);
+        });
+      }
+
+      function navigateToChatPage(userId) {
+        const baseURL = window.location.origin;
+        // Redirect to chatPage.html with the user ID
+        window.location.href = `${BASE_API_URL}/chat-page/?userId=${userId}`;
+      }
+
+      // Fetch users when the page loads
+      window.addEventListener("load", fetchUsers);
+    </script>
+  </body>
+</html>

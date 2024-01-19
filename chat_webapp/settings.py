@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-1*t)ydb2ta-avok)%eunqj)clv7y%o-*8hnn0x8bh2mn5%m%=9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'chat_app',
+    'rest_framework',
+    'corsheaders'
 ]
 ASGI_APPLICATION = 'chat_webapp.asgi.application'
 CHANNEL_LAYERS = {
@@ -47,13 +49,14 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels.layers.InMemoryChannelLayer"
     }
 }
-LOGIN_REDIRECT_URL = "chat-page"
-LOGOUT_REDIRECT_URL = "login-user"
+LOGIN_REDIRECT_URL = "home-page"
+LOGOUT_REDIRECT_URL = "login-page"
 
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -133,3 +136,29 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# Allow all domains to access the resources (for development purposes)
+CORS_ALLOW_ALL_ORIGINS = True
+BASE_API_URL = "http://127.0.0.1:8000"
+
+
+# Or specify specific origins to allow
+# CORS_ALLOWED_ORIGINS = [
+#     "https://example.com",
+#     "https://sub.example.com",
+#     "http://localhost:8000",
+# ]
+
+# Other optional settings...
+# CORS_ALLOW_CREDENTIALS = True
+# CORS_ALLOW_METHODS = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']
+# CORS_ALLOW_HEADERS = [
+#     'accept',
+#     'accept-encoding',
+#     'authorization',
+#     'content-type',
+#     'dnt',
+#     'origin',
+#     'user-agent',
+#     'x-csrftoken',
+#     'x-requested-with',
+# ]
